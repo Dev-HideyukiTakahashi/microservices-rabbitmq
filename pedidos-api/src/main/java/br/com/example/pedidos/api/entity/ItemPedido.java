@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 import java.util.UUID;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class ItemPedido {
     private UUID id = UUID.randomUUID();
     private Produto produto;
