@@ -1,0 +1,16 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3.10.5-management
+    container_name: rabbitmq-microservices
+    environment:
+      RABBITMQ_DEFAULT_USER: "rabbitmq"
+      RABBITMQ_DEFAULT_PASS: "rabbitmq"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq/
+      - rabbitmq_log:/var/log/rabbitmq/
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+volumes:
+  rabbitmq_data:
+  rabbitmq_log:
