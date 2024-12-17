@@ -12,8 +12,8 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class Pedido {
 
     private UUID id = UUID.randomUUID();
