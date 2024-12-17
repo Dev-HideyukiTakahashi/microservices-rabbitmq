@@ -11,6 +11,14 @@ services:
     ports:
       - "15672:15672"
       - "5672:5672"
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: mailhog
+    ports:
+      - '1025:1025'
+      - '8025:8025'
+
 volumes:
   rabbitmq_data:
   rabbitmq_log:
