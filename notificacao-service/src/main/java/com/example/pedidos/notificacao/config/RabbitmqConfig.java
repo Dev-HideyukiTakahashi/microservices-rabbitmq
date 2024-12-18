@@ -15,6 +15,10 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
 @Configuration
 public class RabbitmqConfig {
 
@@ -24,20 +28,43 @@ public class RabbitmqConfig {
     @Value("${rabbitmq.queue.name}")
     private String queueName;
 
+    @Value("${rabbitmq.exchange.dlx.name}")
+    private String exchangeDlxName;
+
+    @Value("${rabbitmq.queue.dlq.name}")
+    private String queueDlqName;
+
     @Bean
     public FanoutExchange pedidosExchange(){
         return  new FanoutExchange(exchangeName);
     }
 
     @Bean
+    public FanoutExchange pedidosDlxExchange(){
+        return  new FanoutExchange(exchangeDlxName);
+    }
+
+    @Bean
     public Queue notificaoQueue(){
-        return new Queue(queueName);
+        Map<String, Object> arguments = new HashMap<>();
+        arguments.put("x-dead-letter-exchange", exchangeDlxName);
+        return new Queue(queueName, true, false,false,arguments);
+    }
+
+    @Bean
+    public Queue notificaoDlqQueue(){
+        return new Queue(queueDlqName);
     }
 
     // fazendo bind da fila com a exchange
     @Bean
     public Binding binding(){
         return BindingBuilder.bind(notificaoQueue()).to(pedidosExchange());
+    }
+
+    @Bean
+    public Binding bindingDlq(){
+        return BindingBuilder.bind(notificaoDlqQueue()).to(pedidosDlxExchange());
     }
 
     @Bean
@@ -61,5 +88,4 @@ public class RabbitmqConfig {
     public ApplicationListener<ApplicationReadyEvent> applicationReadyEventApplicationListener(RabbitAdmin rabbitAdmin){
         return event -> rabbitAdmin.initialize();
     }
-
 }
